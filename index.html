@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cal Effect</title>
+    <style>
+        body {
+            background-color: #222;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #view {
+            position: relative;
+            --flap-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            width: 100%;
+        }
+
+        .ai {
+            color: red;
+            font-size: 90px;
+            line-height: 120px;
+            letter-spacing: 4px;
+        }
+
+        .splitflap {
+            position: relative;
+            min-width: 100px;
+            height: 100px;
+            margin: 10px;
+            line-height: 90px;
+            font-size: 90px;
+            font-family: Monospace;
+            text-align: center;
+            color: white;
+        }
+
+        .center {
+            transform-origin: center right;
+            ;
+            display: flex;
+            justify-content: center;
+        }
+
+        .top {
+            position: relative;
+            height: 50%;
+            width: 100%;
+            background-color: var(--flap-color);
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        div {
+            perspective: 500px;
+        }
+
+        .bottom {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            margin-top: -50%;
+            border-radius: 5px 5px 5px 5px;
+            z-index: -1;
+            background-color: black;
+            background-image: linear-gradient(rgba(59, 182, 235, 0), var(--flap-color));
+            transform-origin: center;
+        }
+
+        .nextHalf {
+            position: relative;
+            height: 50%;
+            width: 100%;
+            margin-top: -100%;
+            overflow: hidden;
+            border-radius: 5px 5px 0 0;
+            z-index: 2;
+            background-color: black;
+            background-image: linear-gradient(var(--flap-color), rgba(59, 182, 235, 0));
+            transform-origin: bottom;
+        }
+
+        .nextFull {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            background-color: var(--flap-color);
+            margin-top: -50%;
+            border-radius: 5px 5px 5px 5px;
+            z-index: -3;
+        }
+
+        .flip1 {
+            animation: flip1 ease-in 1;
+            animation-duration: 400ms;
+        }
+
+        .flip2 {
+            animation: flip2 ease-out 1;
+            animation-duration: 400ms;
+        }
+
+        @keyframes flip1 {
+            0% {
+                transform: rotateX(0deg);
+                background-color: var(--flap-color);
+            }
+
+            50% {
+                transform: rotateX(90deg);
+                background-color: black;
+            }
+
+            100% {
+                transform: rotateX(90deg);
+            }
+        }
+
+        @keyframes flip2 {
+            0% {
+                transform: rotateX(-90deg);
+            }
+
+            50% {
+                transform: rotateX(-90deg);
+            }
+
+            100% {
+                transform: rotateX(0deg);
+                background-color: var(--flap-color);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="view">
+        <!-- <div class="ai">www.</div> -->
+        <div class="center">
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+
+</html>
