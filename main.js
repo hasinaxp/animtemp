@@ -3,13 +3,13 @@ computedStyle = window.getComputedStyle(view);
 const backColor = computedStyle.getPropertyValue('--flap-color');
 
 let ai = document.createElement('div');
-ai.classList.add('ai');
-ai.innerHTML = '.ai';
-view.appendChild(ai);
+// ai.classList.add('ai');
+// ai.innerHTML = '.ai';
+// view.appendChild(ai);
 
-const amountOfFlaps = 10;
-const animationSpeed = 400;
-
+const amountOfFlaps = 13;
+const animationSpeed = 380;
+const randomBreak = 24;
 div = document.querySelector('.center');
 html = '';
 for (let x = 0; x < amountOfFlaps; x++) {
@@ -26,22 +26,40 @@ async function main() {
     let txtFile = await fetch('./words.txt');
     let allText = await txtFile.text();
     listStr = allText.split('\n');
-    listStr = listStr.filter((str) => str.length >= 5);
+    listStr = listStr.filter((str) => str.length >= 4 && str.length <= 8);
     listStr = suffle(listStr);
 
-    let flapStrings = listStr.map((str) => prepare(str, amountOfFlaps));
+    let flapStrings = listStr;
     flapStrings = sortStringsByInPlaceChanges(flapStrings);
+    const exts = ['.com', '.net', '.org', '.in'];
+    for (let i = 0; i < randomBreak; i++) {
+        let ext = exts[Math.floor(Math.random() * exts.length)];
+        flapStrings[i] += ext;
+    }
+    for (let i = randomBreak; i < flapStrings.length; i++) {
+        flapStrings[i] += '.ai';
+    }
+    flapStrings = flapStrings.map((str) => prepare(str, amountOfFlaps));
+
+    console.log(flapStrings[0].length);
 
     a1 = document.querySelectorAll('.top');
     a2 = document.querySelectorAll('.bottom');
     b1 = document.querySelectorAll('.nextFull');
     b2 = document.querySelectorAll('.nextHalf');
 
-    for (var x = 0; x < amountOfFlaps.length; x++) {
-        a2[x].style.animationDuration = `${animationSpeed}ms`;
-        b2[x].style.animationDuration = `${animationSpeed}ms`;
-    }
+    const setAnimationSpeed = (speed) => {
+        for (var x = 0; x < amountOfFlaps.length; x++) {
+            a2[x].style.animationDuration = `${speed}ms`;
+            b2[x].style.animationDuration = `${speed}ms`;
+        }
+        // console.log(document.querySelector('.flip1'));
+        // document.querySelector('.flip1').style.animationDuration = `${speed}ms`;
+        //document.querySelector('.flip2').style.animationDuration = `${speed}ms`;
+    };
 
+    setAnimationSpeed(animationSpeed);
+    let newSpeed = animationSpeed;
     let stringIndex = 0;
     setInterval(function () {
         let i = stringIndex;
@@ -51,6 +69,9 @@ async function main() {
             else flipIt(x, stringIndex);
         }
         stringIndex = (stringIndex + 1) % flapStrings.length;
+        newSpeed = Math.max(50, (newSpeed -= 4));
+        setAnimationSpeed(newSpeed);
+        console.log(newSpeed);
     }, animationSpeed);
 
     function flipIt(x, i) {
