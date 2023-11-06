@@ -7,7 +7,7 @@ let ai = document.createElement('div');
 // ai.innerHTML = '.ai';
 // view.appendChild(ai);
 
-const amountOfFlaps = 13;
+const amountOfFlaps = 12;
 const animationSpeed = 380;
 const randomBreak = 24;
 div = document.querySelector('.center');
@@ -18,8 +18,12 @@ for (let x = 0; x < amountOfFlaps; x++) {
 }
 
 div.innerHTML = html;
-
+String.prototype.replaceAt = function (index, replacement) {
+    return this.substring(0, index) + replacement + this.substring(index + replacement.length);
+};
 main();
+
+let intervalId;
 
 async function main() {
     let listStr = [];
@@ -40,6 +44,46 @@ async function main() {
         flapStrings[i] += '.ai';
     }
     flapStrings = flapStrings.map((str) => prepare(str, amountOfFlaps));
+    flapStrings.length = 106;
+    let aiPos = 0;
+    for (let i = 0; i < (amountOfFlaps - 2) / 2 + 2; i++) {
+        let str = '';
+        for (let j = 0; j < amountOfFlaps - 2 - i; j++) {
+            str += ' ';
+        }
+        str += 'ai';
+        aiPos = str.length;
+        while (str.length < amountOfFlaps) {
+            str += ' ';
+        }
+        flapStrings.push(str);
+        flapStrings.push(str);
+    }
+    let lastStr = flapStrings[flapStrings.length - 1];
+    for (let i = 0; i < 4; i++) {
+        flapStrings.push(lastStr);
+    }
+
+    lastStr = lastStr.replaceAt(aiPos - 3, 'k');
+    flapStrings.push(lastStr);
+    lastStr = lastStr.replaceAt(aiPos, 'r');
+    flapStrings.push(lastStr);
+    lastStr = lastStr.replaceAt(aiPos + 1, 'o');
+    flapStrings.push(lastStr);
+    lastStr = lastStr.replaceAt(aiPos + 2, 'n');
+    flapStrings.push(lastStr);
+    lastStr = lastStr.replaceAt(aiPos - 2, 'A');
+    flapStrings.push(lastStr);
+    lastStr = lastStr.replaceAt(aiPos - 1, 'I');
+    flapStrings.push(lastStr);
+
+    for (let i = 1; i < 10; i++) {
+        console.log(flapStrings[flapStrings.length - i]);
+    }
+
+    for (let i = 0; i < 1000; i++) {
+        flapStrings.push(lastStr);
+    }
 
     console.log(flapStrings[0].length);
 
@@ -48,20 +92,64 @@ async function main() {
     b1 = document.querySelectorAll('.nextFull');
     b2 = document.querySelectorAll('.nextHalf');
 
+    let acout = 0;
+
     const setAnimationSpeed = (speed) => {
         for (var x = 0; x < amountOfFlaps.length; x++) {
             a2[x].style.animationDuration = `${speed}ms`;
             b2[x].style.animationDuration = `${speed}ms`;
         }
+        acout++;
+        if (acout == 80) {
+            document
+                .getElementById('text-1')
+                .animate(
+                    [
+                        { opacity: 0 },
+                        { opacity: 1 },
+                        { opacity: 1 },
+                        { opacity: 1 },
+                        { opacity: 1 },
+                        { opacity: 0 },
+                    ],
+                    {
+                        duration: 5000,
+                        iterations: 1,
+                        fill: 'forwards',
+                    }
+                );
+            setTimeout(() => {
+                document.getElementById('text-1').innerHTML = 'For us at';
+                document.getElementById('text-1').animate([{ opacity: 0 }, { opacity: 1 }], {
+                    duration: 500,
+                    iterations: 1,
+                    fill: 'forwards',
+                });
+                setAnimationSpeed(200);
+                setTimeout(() => {
+                    document.getElementById('text-2').animate([{ opacity: 0 }, { opacity: 1 }], {
+                        duration: 500,
+                        iterations: 1,
+                        fill: 'forwards',
+                    });
+                    clearInterval(intervalId);
+                }, 2500);
+            }, 7000);
+        }
         // console.log(document.querySelector('.flip1'));
-        // document.querySelector('.flip1').style.animationDuration = `${speed}ms`;
-        //document.querySelector('.flip2').style.animationDuration = `${speed}ms`;
+        // if (acout % 24 != 0) return;
+        // document
+        //     .querySelectorAll('.flip1')
+        //     .forEach((elem) => (elem.style.animationDuration = `${speed}ms`));
+        // document
+        //     .querySelectorAll('.flip2')
+        //     .forEach((elem) => (elem.style.animationDuration = `${speed}ms`));
     };
 
     setAnimationSpeed(animationSpeed);
     let newSpeed = animationSpeed;
     let stringIndex = 0;
-    setInterval(function () {
+    const intervalFunc = () => {
         let i = stringIndex;
         let i2 = (stringIndex + 1) % flapStrings.length;
         for (let x = 0; x < amountOfFlaps; x++) {
@@ -69,10 +157,13 @@ async function main() {
             else flipIt(x, stringIndex);
         }
         stringIndex = (stringIndex + 1) % flapStrings.length;
-        newSpeed = Math.max(50, (newSpeed -= 4));
+        let factor = newSpeed < 200 ? 1 : 4;
+        newSpeed = Math.max(100, (newSpeed -= factor));
         setAnimationSpeed(newSpeed);
-        console.log(newSpeed);
-    }, animationSpeed);
+        clearInterval(intervalId);
+        intervalId = setInterval(intervalFunc, newSpeed);
+    };
+    intervalId = setInterval(intervalFunc, animationSpeed);
 
     function flipIt(x, i) {
         let i2 = (i + 1) % flapStrings.length;
