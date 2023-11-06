@@ -17,9 +17,19 @@
             overflow: hidden;
         }
 
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
         #view {
             position: relative;
-            --flap-color: #333;
+            --flap-color: #444;
             display: flex;
             justify-content: center;
             align-items: flex-end;
@@ -141,14 +151,26 @@
                 background-color: var(--flap-color);
             }
         }
+
+        h2 {
+            color: white;
+            font-size: 64px;
+            font-family: Helvetica, sans-serif;
+            opacity: 0;
+            font-weight: lighter;
+        }
     </style>
 </head>
 
 <body>
-    <div id="view">
-        <!-- <div class="ai">www.</div> -->
-        <div class="center">
+    <div class="container">
+        <h2 id="text-1">For most AI comes after!</h2>
+        <div id="view">
+            <!-- <div class="ai">www.</div> -->
+            <div class="center">
+            </div>
         </div>
+        <h2 id="text-2"><span style="color: #f60;">AI</span> is our core</h2>
     </div>
     <script src="main.js"></script>
 </body>
